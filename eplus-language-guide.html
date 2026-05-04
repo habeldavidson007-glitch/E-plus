@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E+ v4 — Complete Language Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0d12;
+  --surface: #111318;
+  --surface2: #181c24;
+  --border: #232836;
+  --accent: #4af0a0;
+  --accent2: #5b9cf6;
+  --accent3: #f06a4a;
+  --warn: #f5c518;
+  --text: #d4dbe8;
+  --muted: #6b7691;
+  --code-bg: #0d1117;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.75;
+  min-height: 100vh;
+}
+
+/* ── SIDEBAR ── */
+#sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 260px;
+  height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 32px 0 32px;
+  z-index: 100;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.sidebar-logo {
+  padding: 0 24px 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+.sidebar-logo h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--accent);
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+.sidebar-logo span {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.nav-section {
+  padding: 8px 24px 4px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+#sidebar a {
+  display: block;
+  padding: 7px 24px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13.5px;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+#sidebar a:hover, #sidebar a.active {
+  color: var(--accent);
+  border-left-color: var(--accent);
+  background: rgba(74,240,160,0.05);
+}
+
+/* ── MAIN CONTENT ── */
+#content {
+  margin-left: 260px;
+  padding: 64px 64px 120px;
+  max-width: 1000px;
+}
+
+/* ── HERO ── */
+.hero {
+  padding: 64px 0 56px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 64px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: 'E+';
+  position: absolute;
+  right: -20px; top: -30px;
+  font-family: 'Playfair Display', serif;
+  font-size: 220px;
+  font-weight: 900;
+  color: rgba(74,240,160,0.03);
+  line-height: 1;
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-block;
+  background: rgba(74,240,160,0.1);
+  border: 1px solid rgba(74,240,160,0.3);
+  color: var(--accent);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 14px;
+  border-radius: 100px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 58px;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  color: #fff;
+  margin-bottom: 20px;
+}
+.hero h1 em {
+  color: var(--accent);
+  font-style: normal;
+}
+.hero p {
+  font-size: 17px;
+  color: var(--muted);
+  max-width: 580px;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* ── SECTIONS ── */
+.section {
+  margin-bottom: 72px;
+  scroll-margin-top: 32px;
+}
+
+h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.8px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+h2 .section-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 400;
+  background: rgba(74,240,160,0.1);
+  padding: 2px 10px;
+  border-radius: 4px;
+  letter-spacing: 0;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 500;
+  color: #c0cce0;
+  margin: 32px 0 12px;
+  letter-spacing: -0.3px;
+}
+
+p { margin-bottom: 14px; color: var(--text); }
+
+/* ── CALLOUT BOXES ── */
+.callout {
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 24px 0;
+  border-left: 3px solid;
+}
+.callout.info {
+  background: rgba(91,156,246,0.07);
+  border-color: var(--accent2);
+}
+.callout.warn {
+  background: rgba(245,197,24,0.07);
+  border-color: var(--warn);
+}
+.callout.danger {
+  background: rgba(240,106,74,0.07);
+  border-color: var(--accent3);
+}
+.callout.success {
+  background: rgba(74,240,160,0.07);
+  border-color: var(--accent);
+}
+.callout-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.callout.info .callout-title { color: var(--accent2); }
+.callout.warn .callout-title { color: var(--warn); }
+.callout.danger .callout-title { color: var(--accent3); }
+.callout.success .callout-title { color: var(--accent); }
+
+/* ── CODE BLOCKS ── */
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px 28px;
+  overflow-x: auto;
+  margin: 20px 0;
+  position: relative;
+}
+pre code {
+  font-family: 'DM Mono', monospace;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: #abb2bf;
+}
+.code-label {
+  position: absolute;
+  top: 12px; right: 16px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+}
+
+/* Syntax coloring */
+.k { color: #c678dd; }  /* keyword */
+.s { color: #98c379; }  /* string */
+.c { color: var(--muted); font-style: italic; } /* comment */
+.sym { color: var(--accent); font-weight: 500; }  /* symbol */
+.fn { color: #61afef; }  /* function */
+.n { color: #e06c75; }   /* number */
+.id { color: var(--text); }  /* identifier */
+.op { color: var(--warn); }  /* operator */
+.arr { color: var(--accent); font-weight: 600; } /* arrow */
+
+/* ── DICT TABLE ── */
+.dict-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 24px 0;
+}
+.dict-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 22px;
+  transition: border-color 0.2s;
+}
+.dict-card:hover { border-color: var(--accent); }
+.dict-sym {
+  font-family: 'DM Mono', monospace;
+  font-size: 22px;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.dict-name {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.dict-desc { font-size: 13.5px; color: var(--text); margin-bottom: 10px; }
+.dict-example {
+  font-family: 'DM Mono', monospace;
+  font-size: 12.5px;
+  color: var(--accent2);
+  background: var(--code-bg);
+  padding: 8px 12px;
+  border-radius: 5px;
+}
+
+/* ── EBNF TABLE ── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 13.5px;
+}
+th {
+  text-align: left;
+  padding: 12px 16px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  font-weight: 500;
+}
+td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  vertical-align: top;
+}
+tr:hover td { background: rgba(255,255,255,0.02); }
+td:first-child { color: var(--accent2); }
+td:nth-child(2) { color: var(--text); }
+td:nth-child(3) { color: var(--muted); }
+
+/* ── COMPARISON TABLE ── */
+.comp-table td:first-child { color: var(--accent); }
+.comp-table td:not(:first-child) { color: var(--text); }
+
+/* ── FILE TREE ── */
+.filetree {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px 28px;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  line-height: 2;
+  margin: 20px 0;
+}
+.ft-dir { color: var(--accent2); }
+.ft-file { color: var(--muted); }
+.ft-key { color: var(--accent); }
+
+/* ── PIPELINE ── */
+.pipeline {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 28px 0;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pipe-step {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 13px;
+  font-family: 'DM Mono', monospace;
+  color: var(--text);
+  text-align: center;
+}
+.pipe-step strong { color: var(--accent); display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+.pipe-arrow {
+  color: var(--accent);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* ── RULE CARDS ── */
+.rule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+}
+.rule-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 18px;
+}
+.rule-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+  background: rgba(74,240,160,0.1);
+  min-width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.rule-text { font-size: 14px; }
+
+/* ── INLINE CODE ── */
+code {
+  font-family: 'DM Mono', monospace;
+  font-size: 12.5px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  padding: 1px 7px;
+  border-radius: 4px;
+  color: var(--accent2);
+}
+
+/* ── REMOVED LIST ── */
+.removed-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(240,106,74,0.08);
+  border: 1px solid rgba(240,106,74,0.2);
+  border-radius: 6px;
+  padding: 8px 14px;
+  margin: 4px;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--accent3);
+}
+.removed-item::before { content: '✕'; color: var(--accent3); font-size: 11px; }
+
+/* ── AST TREE ── */
+.ast-block {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  line-height: 1.9;
+  padding: 20px 28px;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin: 16px 0;
+}
+.ast-node { color: var(--accent2); }
+.ast-leaf { color: var(--accent); }
+.ast-edge { color: var(--muted); }
+
+/* Responsive */
+@media (max-width: 900px) {
+  #sidebar { display: none; }
+  #content { margin-left: 0; padding: 32px 24px 80px; }
+  .dict-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 40px; }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <h1>E+</h1>
+    <span>Language Guide v4</span>
+  </div>
+  <div class="nav-section">Overview</div>
+  <a href="#foundation">Foundation</a>
+  <a href="#core-model">Core Model</a>
+  <a href="#rules">Non-Negotiable Rules</a>
+
+  <div class="nav-section">Dictionary</div>
+  <a href="#dictionary">Full Dictionary</a>
+  <a href="#examples">Cognitive Examples</a>
+  <a href="#removed">Removed Features</a>
+
+  <div class="nav-section">Grammar</div>
+  <a href="#ebnf">EBNF Grammar</a>
+  <a href="#expressions">Expressions</a>
+  <a href="#blocks">Block Structure</a>
+
+  <div class="nav-section">Implementation</div>
+  <a href="#ast">AST Schema</a>
+  <a href="#lexer">Lexer</a>
+  <a href="#parser">Parser</a>
+  <a href="#validator">Cognitive Validator</a>
+  <a href="#transpiler">Transpiler</a>
+
+  <div class="nav-section">Tooling</div>
+  <a href="#vscode">VSCode Extension</a>
+  <a href="#multi-target">Multi-Target Output</a>
+  <a href="#pipeline">Full Pipeline</a>
+  <a href="#future">Future Evolution</a>
+</nav>
+
+<!-- MAIN -->
+<main id="content">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">Cognitively-Aligned · Conversational · Executable</div>
+    <h1>E+ <em>v4</em><br>Language Reference</h1>
+    <p>A programming language that mirrors how humans think — incremental, readable, and structured just enough to be executable. Code that reads like a thought written down.</p>
+  </div>
+
+  <!-- 1. FOUNDATION -->
+  <section class="section" id="foundation">
+    <h2><span class="section-num">01</span> Foundation</h2>
+    <p>E+ v4 is no longer just an intent-first language. It is a <strong>cognitively-aligned conversational programming language</strong> that mirrors how humans think (like speech) while remaining stable and executable (like writing).</p>
+    <div class="callout success">
+      <div class="callout-title">Core Realization</div>
+      Humans do not think in full structured sentences, nor in symbolic syntax. They think in <strong>incremental meaning chunks</strong> — and when they write, they refine and structure those chunks. E+ v4 bridges this gap.
+    </div>
+  </section>
+
+  <!-- 2. CORE MODEL -->
+  <section class="section" id="core-model">
+    <h2><span class="section-num">02</span> Core Model: Speech → Writing Hybrid</h2>
+    <p>E+ operates on two simultaneous layers that must coexist in every valid program:</p>
+    <div class="dict-grid">
+      <div class="dict-card">
+        <div class="dict-sym">🗣</div>
+        <div class="dict-name">Cognitive Layer — Speech-like</div>
+        <div class="dict-desc">Incremental. One thought at a time. Low object count (1–3 entities). Context-driven flow. Reads like explaining something aloud.</div>
+      </div>
+      <div class="dict-card">
+        <div class="dict-sym">📝</div>
+        <div class="dict-name">Structural Layer — Writing-like</div>
+        <div class="dict-desc">Persistent. Readable. Executable. Slightly more organized. Enables real computation and machine interpretation.</div>
+      </div>
+    </div>
+    <div class="callout info">
+      <div class="callout-title">Design Mandate</div>
+      The language must <em>feel</em> like thinking out loud, but <em>behave</em> like structured code.
+    </div>
+  </section>
+
+  <!-- 3. RULES -->
+  <section class="section" id="rules">
+    <h2><span class="section-num">03</span> Non-Negotiable Rules</h2>
+    <p>Every valid E+ program must follow these constraints — they are enforced at the cognitive validator layer, not just by convention:</p>
+    <div class="rule-list">
+      <div class="rule-item"><div class="rule-num">1</div><div class="rule-text">One line equals one cognitive step.</div></div>
+      <div class="rule-item"><div class="rule-num">2</div><div class="rule-text">Each line involves at most <strong>3 entities</strong> (agent, action, target).</div></div>
+      <div class="rule-item"><div class="rule-num">3</div><div class="rule-text">No compressed multi-intent logic in a single line.</div></div>
+      <div class="rule-item"><div class="rule-num">4</div><div class="rule-text">Flow must feel continuous — like explaining something step by step.</div></div>
+      <div class="rule-item"><div class="rule-num">5</div><div class="rule-text">Symbols must not feel mechanical or repetitive; words are preferred when clearer.</div></div>
+    </div>
+    <div class="callout warn">
+      <div class="callout-title">Important</div>
+      Rules 1–3 are enforced by the <strong>Cognitive Validator</strong>. Grammar alone does not catch violations — a semantic linter is required.
+    </div>
+  </section>
+
+  <!-- 4. DICTIONARY -->
+  <section class="section" id="dictionary">
+    <h2><span class="section-num">04</span> The E+ Dictionary</h2>
+    <p>Intentionally minimal and semantically meaningful. Every element reflects how humans naturally express intent. There are no arbitrary symbols.</p>
+    <div class="dict-grid">
+
+      <div class="dict-card">
+        <div class="dict-sym">@</div>
+        <div class="dict-name">Entity Declaration — optional</div>
+        <div class="dict-desc">Marks a named entity (thing) in your thinking. Optional in relaxed mode.</div>
+        <div class="dict-example">@user = &lt; "Your name"<br>user = &lt; "Your name"</div>
+      </div>
+
+      <div class="dict-card">
+        <div class="dict-sym">&lt;</div>
+        <div class="dict-name">Input — receive</div>
+        <div class="dict-desc">Represents receiving something from outside the program. Matches the mental model: <em>"I ask and receive."</em></div>
+        <div class="dict-example">age = &lt; "Your age"</div>
+      </div>
+
+      <div class="dict-card">
+        <div class="dict-sym">&gt;</div>
+        <div class="dict-name">Output — express</div>
+        <div class="dict-desc">Represents expressing or showing something to the outside world.</div>
+        <div class="dict-example">&gt; "Hello, world"</div>
+      </div>
+
+      <div class="dict-card">
+        <div class="dict-sym">?</div>
+        <div class="dict-name">Decision — question</div>
+        <div class="dict-desc">Represents a question in thought. Mirrors internal reasoning: <em>"Is this true?"</em></div>
+        <div class="dict-example">? (age &gt; 17) → &gt; "Allowed"</div>
+      </div>
+
+      <div class="dict-card">
+        <div class="dict-sym">else</div>
+        <div class="dict-name">Fallback — natural continuation</div>
+        <div class="dict-desc">Replaces symbolic fallback (<code>::</code>) with a natural continuation word. Must follow a condition block.</div>
+        <div class="dict-example">else → &gt; "Denied"</div>
+      </div>
+
+      <div class="dict-card">
+        <div class="dict-sym">→</div>
+        <div class="dict-name">Flow Block — continuation</div>
+        <div class="dict-desc">Signals the continuation of thought into a block. Replaces braces and indentation rules with a single semantic arrow.</div>
+        <div class="dict-example">? (x) → &gt; "yes"</div>
+      </div>
+
+      <div class="dict-card">
+        <div class="dict-sym">repeat</div>
+        <div class="dict-name">Repeat — iteration</div>
+        <div class="dict-desc">Represents iteration in natural language. Avoids symbolic loop syntax.</div>
+        <div class="dict-example">repeat item → &gt; item</div>
+      </div>
+
+      <div class="dict-card">
+        <div class="dict-sym">[ ]</div>
+        <div class="dict-name">Function Definition</div>
+        <div class="dict-desc">Represents defining a reusable thought or behavior. Brackets signal a named reusable block.</div>
+        <div class="dict-example">[ greet ] (name) → &gt; "Hello " + name</div>
+      </div>
+
+      <div class="dict-card">
+        <div class="dict-sym">call / ^</div>
+        <div class="dict-name">Function Call — two modes</div>
+        <div class="dict-desc">Readable mode (<code>call</code>) for clarity; compact mode (<code>^</code>) for brevity. Both are valid.</div>
+        <div class="dict-example">call greet("John")<br>^greet("John")</div>
+      </div>
+
+      <div class="dict-card">
+        <div class="dict-sym">return / =&gt;</div>
+        <div class="dict-name">Return — emit result</div>
+        <div class="dict-desc">Readable form preferred. Emits a value from a function block.</div>
+        <div class="dict-example">return result</div>
+      </div>
+
+      <div class="dict-card">
+        <div class="dict-sym">=</div>
+        <div class="dict-name">Assignment — state</div>
+        <div class="dict-desc">Standard assignment; already intuitive across all programming contexts.</div>
+        <div class="dict-example">allowed = false</div>
+      </div>
+
+      <div class="dict-card">
+        <div class="dict-sym">remove / ~~</div>
+        <div class="dict-name">Remove — discard</div>
+        <div class="dict-desc">Deletes a named value. Readable form preferred.</div>
+        <div class="dict-example">remove temp</div>
+      </div>
+
+      <div class="dict-card">
+        <div class="dict-sym">##</div>
+        <div class="dict-name">Comment — human layer</div>
+        <div class="dict-desc">Human-readable annotation layer. Never affects execution.</div>
+        <div class="dict-example">## checking user eligibility</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 5. EXAMPLES -->
+  <section class="section" id="examples">
+    <h2><span class="section-num">05</span> Cognitive Flow Examples</h2>
+
+    <h3>Example 1 — Natural Decision Flow</h3>
+    <pre><code class="code-label">E+</code><span class="c">## check if user is of legal age</span>
+<span class="id">age</span> <span class="op">=</span> <span class="sym">&lt;</span> <span class="s">"Age"</span>
+<span class="id">allowed</span> <span class="op">=</span> <span class="k">false</span>
+<span class="sym">?</span> (<span class="id">age</span> <span class="op">&gt;</span> <span class="n">17</span>) <span class="arr">→</span> <span class="id">allowed</span> <span class="op">=</span> <span class="k">true</span>
+<span class="sym">?</span> (<span class="id">allowed</span>) <span class="arr">→</span> <span class="sym">&gt;</span> <span class="s">"Allowed"</span>
+<span class="k">else</span> <span class="arr">→</span> <span class="sym">&gt;</span> <span class="s">"Denied"</span></code></pre>
+
+    <h3>Example 2 — Loop as Thought Sequence</h3>
+    <pre><code class="code-label">E+</code><span class="k">repeat</span> <span class="id">item</span> <span class="arr">→</span>
+  <span class="id">valid</span> <span class="op">=</span> <span class="fn">check</span> <span class="id">item</span>
+  <span class="sym">?</span> (<span class="id">valid</span>) <span class="arr">→</span> <span class="sym">&gt;</span> <span class="id">item</span></code></pre>
+
+    <h3>Example 3 — Function as Reusable Thought</h3>
+    <pre><code class="code-label">E+</code>[<span class="fn">add</span>] (<span class="id">a</span>, <span class="id">b</span>) <span class="arr">→</span>
+  <span class="id">result</span> <span class="op">=</span> <span class="id">a</span> <span class="op">+</span> <span class="id">b</span>
+  <span class="k">return</span> <span class="id">result</span>
+
+<span class="id">sum</span> <span class="op">=</span> <span class="k">call</span> <span class="fn">add</span>(<span class="n">10</span>, <span class="n">20</span>)
+<span class="sym">&gt;</span> <span class="id">sum</span></code></pre>
+  </section>
+
+  <!-- 6. REMOVED -->
+  <section class="section" id="removed">
+    <h2><span class="section-num">06</span> Removed Features & Why</h2>
+    <p>The following were intentionally removed or discouraged from E+ v4:</p>
+    <p style="margin-bottom:16px">
+      <span class="removed-item"><code>@@</code> — mechanical repetition</span>
+      <span class="removed-item"><code>::</code> — non-natural fallback</span>
+      <span class="removed-item">excessive symbolic operators</span>
+    </p>
+    <div class="callout danger">
+      <div class="callout-title">Rationale</div>
+      These do not match how humans think or speak. They introduce <strong>artificial syntax</strong> rather than meaningful expression — and E+ v4's core mandate is alignment with human cognition, not symbolic efficiency.
+    </div>
+  </section>
+
+  <!-- 7. EBNF -->
+  <section class="section" id="ebnf">
+    <h2><span class="section-num">07</span> Formal EBNF Grammar</h2>
+    <p>The grammar defines syntax structure and block rules. It deliberately <strong>does not enforce cognitive constraints</strong> — those belong in the Validator layer.</p>
+
+    <h3>Program Structure</h3>
+    <table>
+      <tr><th>Rule</th><th>Definition</th></tr>
+      <tr><td>program</td><td>{ statement }</td></tr>
+      <tr><td>statement</td><td>assignment | input_stmt | output_stmt | condition_stmt | else_stmt | repeat_stmt | function_def | function_call | return_stmt | remove_stmt | comment | empty</td></tr>
+      <tr><td>block</td><td>"→" NEWLINE INDENT { statement } DEDENT</td></tr>
+    </table>
+
+    <h3>Core Statement Rules</h3>
+    <table>
+      <tr><th>Statement</th><th>Grammar</th><th>Notes</th></tr>
+      <tr><td>assignment</td><td>identifier "=" expression</td><td></td></tr>
+      <tr><td>input_stmt</td><td>identifier "=" "&lt;" string</td><td></td></tr>
+      <tr><td>output_stmt</td><td>"&gt;" expression</td><td></td></tr>
+      <tr><td>condition_stmt</td><td>"?" "(" expression ")" block</td><td></td></tr>
+      <tr><td>else_stmt</td><td>"else" block</td><td>Semantic: must follow condition</td></tr>
+      <tr><td>repeat_stmt</td><td>"repeat" identifier [ "in" expression ] block</td><td></td></tr>
+      <tr><td>function_def</td><td>"[" identifier "]" "(" [ param_list ] ")" block</td><td></td></tr>
+      <tr><td>function_call</td><td>"call" id "(" args ")" | "^" id "(" args ")"</td><td></td></tr>
+      <tr><td>return_stmt</td><td>( "return" | "=&gt;" ) expression</td><td></td></tr>
+      <tr><td>remove_stmt</td><td>( "remove" | "~~" ) identifier</td><td></td></tr>
+      <tr><td>comment</td><td>"##" { character }</td><td></td></tr>
+    </table>
+  </section>
+
+  <!-- 8. EXPRESSIONS -->
+  <section class="section" id="expressions">
+    <h2><span class="section-num">08</span> Expression Grammar</h2>
+    <p>E+ v4 deliberately does not reinvent expression grammar. It delegates to a Python-like expression model:</p>
+    <pre><code class="code-label">EBNF</code>logical_expr = comparison { ( "and" | "or" ) comparison } ;
+comparison  = term { ( "&gt;" | "&lt;" | "&gt;=" | "&lt;=" | "==" | "!=" ) term } ;
+term        = factor { ( "+" | "-" ) factor } ;
+factor      = primary { ( "*" | "/" ) primary } ;
+primary     = number | string | identifier | "(" expression ")" ;</code></pre>
+    <div class="callout warn">
+      <div class="callout-title">Grammar vs. Philosophy</div>
+      Grammar <em>allows</em> <code>? (a and b and c and d)</code>. Your philosophy <em>forbids</em> it. This must be caught by the Cognitive Validator with rules on max logical operators per line.
+    </div>
+  </section>
+
+  <!-- 9. BLOCK STRUCTURE -->
+  <section class="section" id="blocks">
+    <h2><span class="section-num">09</span> Block Structure</h2>
+    <p>Blocks are the core structural innovation of E+. They use INDENT/DEDENT tokens (like Python), initiated by the <code>→</code> arrow:</p>
+    <pre><code class="code-label">EBNF</code>block = "→" NEWLINE INDENT { statement } DEDENT ;</code></pre>
+    <div class="ast-block">
+<span class="ast-edge">program</span>
+<span class="ast-edge">├──</span> <span class="ast-node">assignment</span>         <span class="c">age = &lt; "Age"</span>
+<span class="ast-edge">├──</span> <span class="ast-node">condition_stmt</span>
+<span class="ast-edge">│   └──</span> <span class="ast-node">block</span>
+<span class="ast-edge">│       └──</span> <span class="ast-leaf">output_stmt</span>    <span class="c">&gt; "Allowed"</span>
+<span class="ast-edge">└──</span> <span class="ast-node">else_stmt</span>
+<span class="ast-edge">    └──</span> <span class="ast-node">block</span>
+<span class="ast-edge">        └──</span> <span class="ast-leaf">output_stmt</span>    <span class="c">&gt; "Denied"</span>
+    </div>
+  </section>
+
+  <!-- 10. AST -->
+  <section class="section" id="ast">
+    <h2><span class="section-num">10</span> AST Node Schema</h2>
+    <p>The AST is the universal intermediate representation shared across all transpiler targets. Nodes are minimal and named after cognitive concepts:</p>
+    <pre><code class="code-label">Python</code><span class="k">class</span> <span class="fn">Program</span>(Node):   <span class="c"># root — sequence of statements</span>
+<span class="k">class</span> <span class="fn">Assignment</span>(Node): <span class="c"># name = expr</span>
+<span class="k">class</span> <span class="fn">Input</span>(Node):      <span class="c"># name = &lt; "prompt"</span>
+<span class="k">class</span> <span class="fn">Output</span>(Node):     <span class="c"># &gt; expr</span>
+<span class="k">class</span> <span class="fn">Condition</span>(Node):  <span class="c"># ? (expr) → block</span>
+<span class="k">class</span> <span class="fn">Else</span>(Node):       <span class="c"># else → block</span>
+<span class="k">class</span> <span class="fn">Repeat</span>(Node):     <span class="c"># repeat var [in iter] → block</span>
+<span class="k">class</span> <span class="fn">FunctionDef</span>(Node):<span class="c"># [name] (params) → block</span>
+<span class="k">class</span> <span class="fn">FunctionCall</span>(Node):<span class="c"># call name(args)</span>
+<span class="k">class</span> <span class="fn">Return</span>(Node):     <span class="c"># return expr</span>
+<span class="k">class</span> <span class="fn">Remove</span>(Node):     <span class="c"># remove name</span>
+<span class="k">class</span> <span class="fn">Block</span>(Node):      <span class="c"># container for statement list</span>
+<span class="k">class</span> <span class="fn">Comment</span>(Node):    <span class="c"># ## text</span></code></pre>
+  </section>
+
+  <!-- 11. LEXER -->
+  <section class="section" id="lexer">
+    <h2><span class="section-num">11</span> Lexer (Tokenizer)</h2>
+    <p>The lexer converts raw E+ source text into a flat token stream. It tracks indentation to emit <code>INDENT</code>/<code>DEDENT</code> tokens, enabling block parsing without braces.</p>
+    <h3>Token Types</h3>
+    <table>
+      <tr><th>Token</th><th>Examples</th><th>Purpose</th></tr>
+      <tr><td>KEYWORD</td><td>else, repeat, call, return, remove, in</td><td>Reserved words</td></tr>
+      <tr><td>SYMBOL</td><td>? &lt; &gt; = ( ) [ ] , ^</td><td>Operator symbols</td></tr>
+      <tr><td>ARROW</td><td>→</td><td>Block opener</td></tr>
+      <tr><td>IDENT</td><td>age, user, result</td><td>Variable / function names</td></tr>
+      <tr><td>STRING</td><td>"hello", "Your age"</td><td>String literals</td></tr>
+      <tr><td>NUMBER</td><td>17, 100, 0</td><td>Integer literals</td></tr>
+      <tr><td>COMMENT</td><td>## text</td><td>Human annotations</td></tr>
+      <tr><td>INDENT</td><td>(implicit)</td><td>Block enter</td></tr>
+      <tr><td>DEDENT</td><td>(implicit)</td><td>Block exit</td></tr>
+      <tr><td>EOF</td><td>(end)</td><td>Stream terminator</td></tr>
+    </table>
+  </section>
+
+  <!-- 12. PARSER -->
+  <section class="section" id="parser">
+    <h2><span class="section-num">12</span> Token-Based Parser</h2>
+    <p>A recursive-descent parser converts the token stream into an AST. It is deterministic with no regex hacks — every branch maps to exactly one grammar rule.</p>
+    <h3>Key Parser Methods</h3>
+    <table>
+      <tr><th>Method</th><th>Produces</th></tr>
+      <tr><td>parse()</td><td>Program node</td></tr>
+      <tr><td>parse_statement()</td><td>Any single statement node</td></tr>
+      <tr><td>parse_block()</td><td>Block node (expects ARROW → INDENT … DEDENT)</td></tr>
+      <tr><td>collect_expr()</td><td>Raw expression string (pass-through to transpiler)</td></tr>
+      <tr><td>collect_args()</td><td>List of argument strings</td></tr>
+    </table>
+  </section>
+
+  <!-- 13. VALIDATOR -->
+  <section class="section" id="validator">
+    <h2><span class="section-num">13</span> Cognitive Validator</h2>
+    <p>This is E+'s differentiating layer. It enforces the philosophy <em>after</em> parsing — catching expressions that are grammatically valid but cognitively unsound.</p>
+    <h3>Enforced Rules</h3>
+    <table>
+      <tr><th>Rule</th><th>Default Limit</th><th>Action</th></tr>
+      <tr><td>Max unique identifiers per expression</td><td>3</td><td>Issue: "split into steps"</td></tr>
+      <tr><td>Max logical operators per condition</td><td>2</td><td>Issue: "split condition"</td></tr>
+      <tr><td>Max function parameters</td><td>3</td><td>Issue: "too many parameters"</td></tr>
+      <tr><td>Max function arguments</td><td>3</td><td>Issue: "too many arguments"</td></tr>
+    </table>
+    <div class="callout info">
+      <div class="callout-title">Example Violation</div>
+      <code>? (age &gt; 17 and score &gt; 80 and level == 5)</code> — emits: <em>"Too many logical operators (&gt;2); split condition"</em>
+    </div>
+  </section>
+
+  <!-- 14. TRANSPILER -->
+  <section class="section" id="transpiler">
+    <h2><span class="section-num">14</span> Transpiler — AST → Target</h2>
+    <p>The transpiler walks the AST and emits target-language code. Because the AST is universal, each target language is a separate adapter module.</p>
+
+    <h3>Python Target (Primary)</h3>
+    <table>
+      <tr><th>E+ Construct</th><th>Python Output</th></tr>
+      <tr><td><code>name = &lt; "prompt"</code></td><td><code>name = input("prompt")</code></td></tr>
+      <tr><td><code>&gt; expr</code></td><td><code>print(expr)</code></td></tr>
+      <tr><td><code>? (expr) →</code></td><td><code>if expr:</code></td></tr>
+      <tr><td><code>else →</code></td><td><code>else:</code></td></tr>
+      <tr><td><code>repeat x in items →</code></td><td><code>for x in items:</code></td></tr>
+      <tr><td><code>[fn] (a, b) →</code></td><td><code>def fn(a, b):</code></td></tr>
+      <tr><td><code>return result</code></td><td><code>return result</code></td></tr>
+      <tr><td><code>remove name</code></td><td><code>del name</code></td></tr>
+      <tr><td><code>## text</code></td><td><code># text</code></td></tr>
+    </table>
+
+    <h3>Multi-Target Comparison</h3>
+    <table class="comp-table">
+      <tr><th>E+ Concept</th><th>Python</th><th>C++</th><th>GDScript</th></tr>
+      <tr><td><code>&gt; "text"</code></td><td>print()</td><td>std::cout</td><td>print()</td></tr>
+      <tr><td><code>? (cond) →</code></td><td>if</td><td>if () {}</td><td>if</td></tr>
+      <tr><td><code>repeat x →</code></td><td>for loop</td><td>for loop</td><td>for loop</td></tr>
+      <tr><td><code>[fn] (a) →</code></td><td>def</td><td>auto/typed fn</td><td>func</td></tr>
+      <tr><td><code>name = expr</code></td><td>dynamic assign</td><td>auto/typed var</td><td>var</td></tr>
+    </table>
+    <div class="callout warn">
+      <div class="callout-title">C++ Typing Challenge</div>
+      C++ requires static types. The transpiler must infer or default: integers → <code>int</code>, strings → <code>std::string</code>. Start with Python (100%), GDScript (80%), C++ (basic only).
+    </div>
+  </section>
+
+  <!-- 15. VSCODE -->
+  <section class="section" id="vscode">
+    <h2><span class="section-num">15</span> VSCode Extension Architecture</h2>
+    <p>The plugin is the primary user experience for E+. E+ is positioned as a <strong>cognitive interface layer</strong> that compiles into real languages — not a standalone runtime.</p>
+
+    <div class="filetree">
+<span class="ft-dir">eplus-vscode/</span>
+│
+├── <span class="ft-file">package.json</span>
+├── <span class="ft-file">tsconfig.json</span>
+│
+├── <span class="ft-dir">src/</span>
+│   ├── <span class="ft-key">extension.ts</span>         <span class="c">← entry point</span>
+│   ├── <span class="ft-dir">language/</span>
+│   │   ├── <span class="ft-file">tokenizer.ts</span>
+│   │   ├── <span class="ft-file">parser.ts</span>
+│   │   ├── <span class="ft-file">ast.ts</span>
+│   │   ├── <span class="ft-file">validator.ts</span>
+│   │   └── <span class="ft-dir">transpiler/</span>
+│   │       ├── <span class="ft-file">python.ts</span>
+│   │       ├── <span class="ft-file">cpp.ts</span>
+│   │       └── <span class="ft-file">gdscript.ts</span>
+│   │
+│   ├── <span class="ft-dir">features/</span>
+│   │   ├── <span class="ft-file">hover.ts</span>          <span class="c">← symbol tooltips</span>
+│   │   ├── <span class="ft-file">diagnostics.ts</span>   <span class="c">← inline warnings</span>
+│   │   ├── <span class="ft-file">codeActions.ts</span>   <span class="c">← quick fixes</span>
+│   │   ├── <span class="ft-file">formatter.ts</span>     <span class="c">← style enforcement</span>
+│   │   └── <span class="ft-key">preview.ts</span>       <span class="c">← live transpile view ★</span>
+│   │
+│   └── <span class="ft-dir">ui/</span>
+│       └── <span class="ft-file">webview.ts</span>
+│
+└── <span class="ft-dir">syntaxes/</span>
+    └── <span class="ft-file">eplus.tmLanguage.json</span>
+    </div>
+
+    <h3>Feature Descriptions</h3>
+    <table>
+      <tr><th>Feature File</th><th>Role</th></tr>
+      <tr><td>extension.ts</td><td>Activates extension, registers language, binds all features, triggers parse + validate on change</td></tr>
+      <tr><td>validator.ts</td><td><strong>Differentiator.</strong> Cognitive rules → inline diagnostics with split suggestions</td></tr>
+      <tr><td>preview.ts</td><td><strong>Killer feature.</strong> Live split-panel: E+ left, Python/C++/GDScript right</td></tr>
+      <tr><td>hover.ts</td><td>Hover <code>?</code> → "Condition: checks a logical statement"</td></tr>
+      <tr><td>codeActions.ts</td><td>Quick-fix: suggest splitting complex conditions into steps</td></tr>
+      <tr><td>formatter.ts</td><td>Enforces one-intent-per-line style rule</td></tr>
+    </table>
+  </section>
+
+  <!-- 16. PIPELINE -->
+  <section class="section" id="pipeline">
+    <h2><span class="section-num">16</span> Full Execution Pipeline</h2>
+    <div class="pipeline">
+      <div class="pipe-step"><strong>Source</strong>E+ Code</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step"><strong>Lexer</strong>Token Stream</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step"><strong>Parser</strong>AST</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step"><strong>Validator</strong>Cognitive Issues</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step"><strong>Transpiler</strong>Python / C++ / GDScript</div>
+    </div>
+    <p>Each stage is independent. The AST is the contract between parsing and code generation. The Validator runs as a separate pass and never blocks transpilation — it only emits advisory issues.</p>
+  </section>
+
+  <!-- 17. FUTURE -->
+  <section class="section" id="future">
+    <h2><span class="section-num">17</span> Future Evolution</h2>
+    <div class="rule-list">
+      <div class="rule-item"><div class="rule-num">→</div><div class="rule-text"><strong>CLI tool</strong> — <code>eplus build</code> for standalone compilation outside VSCode</div></div>
+      <div class="rule-item"><div class="rule-num">→</div><div class="rule-text"><strong>Standalone runtime</strong> — direct E+ execution without a host language</div></div>
+      <div class="rule-item"><div class="rule-num">→</div><div class="rule-text"><strong>AI-assisted refactoring</strong> — suggest cognitive splits, simplify over-complex expressions</div></div>
+    </div>
+    <div class="callout success">
+      <div class="callout-title">Final Position</div>
+      E+ becomes a <strong>cognitive programming layer</strong> that sits above real languages — guiding how humans think before they execute. This is not a replacement. This is an interface evolution.
+    </div>
+
+    <h3>The Design Test</h3>
+    <p>Any new feature must pass this single test before inclusion:</p>
+    <blockquote style="border-left: 3px solid var(--accent); padding: 16px 24px; margin: 20px 0; font-size: 17px; color: #c0cce0; font-style: italic; background: rgba(74,240,160,0.04); border-radius: 0 8px 8px 0;">
+      "Does this feel like something a human would naturally say while explaining their reasoning?"
+    </blockquote>
+    <p>If the answer is no — it does not belong in E+.</p>
+  </section>
+
+</main>
+
+<script>
+// Active sidebar link on scroll
+const sections = document.querySelectorAll('.section');
+const links = document.querySelectorAll('#sidebar a');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const a = document.querySelector(`#sidebar a[href="#${e.target.id}"]`);
+      if (a) a.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
