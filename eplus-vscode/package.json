@@ -1,0 +1,107 @@
+{
+  "name": "eplus-vscode",
+  "displayName": "E+ Language",
+  "description": "Cognitively-Aligned Conversational Programming Language",
+  "version": "4.0.0",
+  "publisher": "eplus",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Formatters"
+  ],
+  "activationEvents": [
+    "onLanguage:eplus"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "eplus",
+        "aliases": ["E+", "EPlus", "eplus"],
+        "extensions": [".e+", ".eplus"],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/icon-light.png",
+          "dark": "./icons/icon-dark.png"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "eplus",
+        "scopeName": "source.eplus",
+        "path": "./syntaxes/eplus.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "eplus.preview",
+        "title": "E+: Open Live Preview",
+        "category": "E+"
+      },
+      {
+        "command": "eplus.build",
+        "title": "E+: Build to Target Language",
+        "category": "E+"
+      },
+      {
+        "command": "eplus.validate",
+        "title": "E+: Run Cognitive Validator",
+        "category": "E+"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "resourceLangId == eplus",
+          "command": "eplus.preview",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "E+ Language",
+      "properties": {
+        "eplus.targetLanguage": {
+          "type": "string",
+          "default": "python",
+          "enum": ["python", "cpp", "gdscript"],
+          "description": "Target language for transpilation"
+        },
+        "eplus.enableCognitiveValidation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable cognitive constraint validation"
+        },
+        "eplus.maxIdentifiersPerLine": {
+          "type": "number",
+          "default": 3,
+          "description": "Maximum unique identifiers allowed per line"
+        },
+        "eplus.maxLogicalOperators": {
+          "type": "number",
+          "default": 2,
+          "description": "Maximum logical operators allowed per condition"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0",
+    "eslint": "^8.55.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0"
+  },
+  "dependencies": {}
+}
