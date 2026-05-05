@@ -1,0 +1,27 @@
+## Task 2: Nested Reasoning - E+ Version
+## Process users with nested conditions
+
+threshold = 1000
+
+users = [
+    {name: "Alice", active: true, balance: 1500},
+    {name: "Bob", active: true, balance: 300},
+    {name: "Charlie", active: false, balance: 2000},
+    {name: "Diana", active: true, balance: 800}
+]
+
+results = []
+
+repeat user in users →
+    ? (user.active) →
+        ? (user.balance > threshold) →
+            status = "priority"
+        else →
+            status = "standard"
+    else →
+        status = "inactive"
+    
+    results = results + [{name: user.name, status: status}]
+
+repeat r in results →
+    > r.name + ": " + r.status

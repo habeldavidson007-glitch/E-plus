@@ -1,0 +1,25 @@
+## Task 3: State + Loop - E+ Version
+## Simulate a resource monitor
+
+readings = [
+    {cpu: 45, ram: 50},
+    {cpu: 75, ram: 65},
+    {cpu: 85, ram: 70},
+    {cpu: 55, ram: 82},
+    {cpu: 40, ram: 45}
+]
+
+actions = []
+
+repeat reading in readings →
+    ? (reading.cpu > 80 or reading.ram > 80) →
+        action = "alert"
+    else ? (reading.cpu > 60 or reading.ram > 60) →
+        action = "warning"
+    else →
+        action = "normal"
+    
+    actions = actions + [action]
+
+repeat a in actions →
+    > a

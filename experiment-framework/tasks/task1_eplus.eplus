@@ -1,0 +1,23 @@
+## Task 1: Conditional Complexity - E+ Version
+## Build a decision system for user classification
+
+## Rules:
+## - If age > 18 AND score > 80 → "premium"
+## - If age > 18 AND score > 50 → "standard"  
+## - If score < 50 OR flagged → "review"
+## - Else → "reject"
+
+age = 25
+score = 85
+flagged = false
+
+? (age > 18 and score > 80) →
+    result = "premium"
+else ? (age > 18 and score > 50) →
+    result = "standard"
+else ? (score < 50 or flagged) →
+    result = "review"
+else →
+    result = "reject"
+
+> result
