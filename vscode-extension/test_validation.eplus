@@ -1,0 +1,18 @@
+## Task Manager Decision System
+
+cpu = sys "psutil.cpu_percent()"
+ram = sys "psutil.virtual_memory().percent"
+users = sys "len(psutil.users())"
+
+score = cpu + ram * 2 - users / 2
+
+? (cpu > 80 and ram > 70 and users > 3) →
+    ? (score > 200) →
+        sys "os.system('kill -9 $(pgrep heavy_process)')"
+        > "Killed heavy process"
+    else →
+        > "High load but safe"
+else ? (cpu > 60 and ram > 50) →
+    > "Moderate load"
+else →
+    > "System normal"

@@ -1,4 +1,37 @@
 ```
-# Test files
-*.eplus
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+target/
+
+# TypeScript/JavaScript
+*.tsbuildinfo
+*.js.map
+*.ts.map
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python (if any Python parts)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
 ```
