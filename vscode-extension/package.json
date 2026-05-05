@@ -20,8 +20,15 @@
     "languages": [
       {
         "id": "eplus",
-        "aliases": ["E+", "EPlus", "eplus"],
-        "extensions": [".e+", ".eplus"],
+        "aliases": [
+          "E+",
+          "EPlus",
+          "eplus"
+        ],
+        "extensions": [
+          ".e+",
+          ".eplus"
+        ],
         "configuration": "./language-configuration.json",
         "icon": {
           "light": "./icons/icon-light.png",
@@ -68,7 +75,11 @@
         "eplus.targetLanguage": {
           "type": "string",
           "default": "python",
-          "enum": ["python", "cpp", "gdscript"],
+          "enum": [
+            "python",
+            "cpp",
+            "gdscript"
+          ],
           "description": "Target language for transpilation"
         },
         "eplus.enableCognitiveValidation": {
@@ -96,12 +107,12 @@
     "lint": "eslint src --ext ts"
   },
   "devDependencies": {
-    "@types/vscode": "^1.85.0",
     "@types/node": "^20.10.0",
-    "typescript": "^5.3.0",
-    "eslint": "^8.55.0",
+    "@types/vscode": "^1.85.0",
     "@typescript-eslint/eslint-plugin": "^6.13.0",
-    "@typescript-eslint/parser": "^6.13.0"
-  },
-  "dependencies": {}
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.55.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.0"
+  }
 }

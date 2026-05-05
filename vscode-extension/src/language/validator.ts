@@ -28,22 +28,24 @@ export interface ValidatorConfig {
   maxLogicalOperators: number;
   maxFunctionParameters: number;
   maxFunctionArguments: number;
+  maxNestingDepth: number;
 }
 
 const DEFAULT_CONFIG: ValidatorConfig = {
   maxIdentifiersPerLine: 3,
   maxLogicalOperators: 2,
   maxFunctionParameters: 3,
-  maxFunctionArguments: 3
+  maxFunctionArguments: 3,
+  maxNestingDepth: 3
 };
 
 export function validate(ast: AST.Program, config: Partial<ValidatorConfig> = {}): ValidationResult {
   const finalConfig = { ...DEFAULT_CONFIG, ...config };
   const issues: CognitiveIssue[] = [];
 
-  // Validate each statement
+  // Validate each statement with nesting depth tracking
   for (const stmt of ast.statements) {
-    validateStatement(stmt, issues, finalConfig);
+    validateStatementInternal(stmt, issues, finalConfig, 0);
   }
 
   // Calculate cognitive score
@@ -56,23 +58,32 @@ export function validate(ast: AST.Program, config: Partial<ValidatorConfig> = {}
   };
 }
 
-function calculateCognitiveScore(ast: AST.Program, issues: CognitiveIssue[]): number {
-  const baseScore = 100;
-  const warningPenalty = 5;
-  const errorPenalty = 15;
-  
-  const warnings = issues.filter(i => i.severity === IssueSeverity.Warning).length;
-  const errors = issues.filter(i => i.severity === IssueSeverity.Error).length;
-  
-  const penalty = (warnings * warningPenalty) + (errors * errorPenalty);
-  return Math.max(0, baseScore - penalty);
+function validateStatement(
+  validatorFn: (stmt: AST.Statement) => void,
+  statements: AST.Statement[]
+): void {
+  for (const stmt of statements) {
+    validatorFn(stmt);
+  }
 }
 
-function validateStatement(
+function validateStatementInternal(
   stmt: AST.Statement,
   issues: CognitiveIssue[],
-  config: ValidatorConfig
+  config: ValidatorConfig,
+  depth: number
 ): void {
+  // Check nesting depth
+  if (depth > config.maxNestingDepth) {
+    issues.push({
+      message: `Nesting depth exceeds limit (${depth} > ${config.maxNestingDepth}). Flatten your logic.`,
+      line: stmt.line,
+      severity: IssueSeverity.Warning,
+      ruleNumber: 4,
+      suggestion: 'Break this into smaller functions or use early returns'
+    });
+  }
+
   switch (stmt.type) {
     case 'Assignment':
       validateExpression(stmt.expression, stmt.line, 'assignment', issues, config, 1);
@@ -88,15 +99,20 @@ function validateStatement(
 
     case 'Condition':
       validateCondition(stmt.condition, stmt.line, issues, config);
-      validateBlock(stmt.block, issues, config);
+      validateBlock(stmt.block, issues, config, depth + 1);
+      break;
+
+    case 'ElseIf':
+      validateCondition(stmt.condition, stmt.line, issues, config);
+      validateBlock(stmt.block, issues, config, depth + 1);
       break;
 
     case 'Else':
-      validateBlock(stmt.block, issues, config);
+      validateBlock(stmt.block, issues, config, depth + 1);
       break;
 
     case 'Repeat':
-      validateBlock(stmt.block, issues, config);
+      validateBlock(stmt.block, issues, config, depth + 1);
       if (stmt.iterable) {
         validateExpression(stmt.iterable, stmt.line, 'repeat iterable', issues, config, 7);
       }
@@ -113,7 +129,7 @@ function validateStatement(
           suggestion: 'Split this function into multiple functions with fewer parameters'
         });
       }
-      validateBlock(stmt.block, issues, config);
+      validateBlock(stmt.block, issues, config, depth + 1);
       break;
 
     case 'FunctionCall':
@@ -137,7 +153,14 @@ function validateStatement(
       break;
 
     case 'SysCall':
-      // SysCall is always cognitively valid — single-intent by definition
+      // Mark sys as unsafe bypass
+      issues.push({
+        message: `sys call detected (unsafe bypass): ${stmt.expression}`,
+        line: stmt.line,
+        severity: IssueSeverity.Warning,
+        ruleNumber: 5,
+        suggestion: 'sys bypasses cognitive validation - ensure this is necessary'
+      });
       break;
 
     case 'Remove':
@@ -150,9 +173,21 @@ function validateStatement(
   }
 }
 
-function validateBlock(block: AST.Block, issues: CognitiveIssue[], config: ValidatorConfig): void {
+function calculateCognitiveScore(ast: AST.Program, issues: CognitiveIssue[]): number {
+  const baseScore = 100;
+  const warningPenalty = 5;
+  const errorPenalty = 15;
+  
+  const warnings = issues.filter(i => i.severity === IssueSeverity.Warning).length;
+  const errors = issues.filter(i => i.severity === IssueSeverity.Error).length;
+  
+  const penalty = (warnings * warningPenalty) + (errors * errorPenalty);
+  return Math.max(0, baseScore - penalty);
+}
+
+function validateBlock(block: AST.Block, issues: CognitiveIssue[], config: ValidatorConfig, depth: number = 0): void {
   for (const stmt of block.statements) {
-    validateStatement(stmt, issues, config);
+    validateStatementInternal(stmt, issues, config, depth);
   }
 }
 
@@ -187,6 +222,28 @@ function validateExpression(
       suggestion: 'Split this condition into multiple sequential checks'
     });
   }
+
+  // Count math operators for expression density check
+  const mathOps = countMathOperators(expr);
+  if (mathOps > 3) {
+    issues.push({
+      message: `Expression too dense (${mathOps} operators). Consider intermediate variables.`,
+      line,
+      severity: IssueSeverity.Warning,
+      ruleNumber: 1,
+      suggestion: 'Break complex expressions into named intermediate steps for clarity'
+    });
+  }
+}
+
+function countMathOperators(expr: string): number {
+  // Count: +, -, *, / (but not -> arrow)
+  const cleanedExpr = expr.replace(/->/g, '');
+  const plusCount = (cleanedExpr.match(/\+/g) || []).length;
+  const minusCount = (cleanedExpr.match(/-(?!=)/g) || []).length;
+  const mulCount = (cleanedExpr.match(/\*/g) || []).length;
+  const divCount = (cleanedExpr.match(/\//g) || []).length;
+  return plusCount + minusCount + mulCount + divCount;
 }
 
 function validateCondition(

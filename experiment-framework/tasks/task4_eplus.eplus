@@ -1,0 +1,53 @@
+## Task 4: Data Transformation (Hostile Task)
+# Tests whether decomposition helps or hinders dense data operations
+
+users = [
+    {name "Alice" age 25 score 85 active true}
+    {name "Bob" age 30 score 72 active true}
+    {name "Charlie" age 22 score 45 active false}
+    {name "Diana" age 28 score 91 active true}
+    {name "Eve" age 35 score 68 active true}
+    {name "Frank" age 29 score 55 active false}
+    {name "Grace" age 31 score 88 active true}
+]
+
+active_users = []
+repeat user in users →
+    ? (user.active == true) →
+        active_users = active_users + [user]
+
+count = len(active_users)
+
+scores = []
+repeat user in active_users →
+    scores = scores + [user.score]
+
+total = 0
+repeat s in scores →
+    total = total + s
+
+average = total / count
+
+max_score = 0
+min_score = 999
+repeat s in scores →
+    ? (s > max_score) →
+        max_score = s
+    ? (s < min_score) →
+        min_score = s
+
+? (average > 80) →
+    classification = "excellent"
+else ? (average > 60) →
+    classification = "good"
+else ? (average > 40) →
+    classification = "average"
+else →
+    classification = "needs improvement"
+
+> "Active users:" count
+> "Score sum:" total
+> "Average score:" average
+> "Max score:" max_score
+> "Min score:" min_score
+> "Classification:" classification

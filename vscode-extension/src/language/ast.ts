@@ -6,6 +6,7 @@ export type NodeType =
     | 'Input'
     | 'Output'
     | 'Condition'
+    | 'ElseIf'
     | 'Else'
     | 'Repeat'
     | 'FunctionDef'
@@ -47,6 +48,12 @@ export interface Output extends Node {
 
 export interface Condition extends Node {
     type: 'Condition';
+    condition: string;
+    block: Block;
+}
+
+export interface ElseIf extends Node {
+    type: 'ElseIf';
     condition: string;
     block: Block;
 }
@@ -113,6 +120,7 @@ export type Statement =
     | Input
     | Output
     | Condition
+    | ElseIf
     | Else
     | Repeat
     | FunctionDef
