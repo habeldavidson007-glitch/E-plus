@@ -1,0 +1,28 @@
+## simple task manager - stress test
+
+tasks = []
+
+[add_task] (task) →
+    tasks = tasks + [task]
+    > "added"
+
+[show_tasks] () →
+    repeat item in tasks →
+        > item
+
+[main] () →
+    repeat forever →
+        action = < "add/show/exit"
+
+        ? (action == "add") →
+            t = < "task"
+            call add_task(t)
+
+        ? (action == "show") →
+            call show_tasks()
+
+        ? (action == "exit") →
+            > "bye"
+            return
+
+call main()

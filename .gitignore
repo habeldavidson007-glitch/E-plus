@@ -1,17 +1,4 @@
 ```
-# Compiled and build artifacts
+# Test files
 *.eplus
-*.pyc
-__pycache__/
-
-# Dependencies
-node_modules/
-package-lock.json
-
-# Editors
-.vscode/
-
-# Logs and temp files
-*.log
-*.tmp
 ```
