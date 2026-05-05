@@ -136,6 +136,10 @@ function validateStatement(
       validateExpression(stmt.expression, stmt.line, 'return', issues, config, 3);
       break;
 
+    case 'SysCall':
+      // SysCall is always cognitively valid — single-intent by definition
+      break;
+
     case 'Remove':
       // Remove statements are always valid
       break;

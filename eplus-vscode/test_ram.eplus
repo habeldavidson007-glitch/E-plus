@@ -1,0 +1,10 @@
+## E+ RAM Monitor
+## demonstrates: loops, conditions, system calls, output
+
+repeat forever →
+    ram = sys "psutil.virtual_memory().percent"
+    ? (ram > 80) →
+        sys "os.system('kill -9 $(pgrep heavy_process)')"
+        > "Process killed — RAM above threshold"
+    else →
+        > "RAM OK: " + ram

@@ -13,6 +13,8 @@ export enum TokenType {
     RETURN = 'RETURN',
     REMOVE = 'REMOVE',
     IN = 'IN',
+    FOREVER = 'FOREVER',
+    SYS = 'SYS',
     TRUE = 'TRUE',
     FALSE = 'FALSE',
     
@@ -21,12 +23,14 @@ export enum TokenType {
     LT = 'LT',                  // <
     GT = 'GT',                  // >
     EQUALS = 'EQUALS',          // =
+    FAT_ARROW = 'FAT_ARROW',    // =>
     LPAREN = 'LPAREN',          // (
     RPAREN = 'RPAREN',          // )
     LBRACKET = 'LBRACKET',      // [
     RBRACKET = 'RBRACKET',      // ]
     COMMA = 'COMMA',            // ,
     CARET = 'CARET',            // ^
+    AT = 'AT',                  // @
     ARROW = 'ARROW',            // →
     TILDE_TILDE = 'TILDE_TILDE',// ~~
     PLUS = 'PLUS',              // +
@@ -60,6 +64,8 @@ const KEYWORDS: Record<string, TokenType> = {
     'return': TokenType.RETURN,
     'remove': TokenType.REMOVE,
     'in': TokenType.IN,
+    'forever': TokenType.FOREVER,
+    'sys': TokenType.SYS,
     'true': TokenType.TRUE,
     'false': TokenType.FALSE
 };
@@ -195,6 +201,13 @@ export function tokenize(source: string): Token[] {
         }
         
         // Two-character operators
+        if (char === '=' && source[pos + 1] === '>') {
+            tokens.push({ type: TokenType.FAT_ARROW, value: '=>', line, column });
+            pos += 2;
+            column += 2;
+            continue;
+        }
+        
         if (char === '>' && source[pos + 1] === '=') {
             tokens.push({ type: TokenType.GTE, value: '>=', line, column });
             pos += 2;
@@ -242,6 +255,7 @@ export function tokenize(source: string): Token[] {
             ']': TokenType.RBRACKET,
             ',': TokenType.COMMA,
             '^': TokenType.CARET,
+            '@': TokenType.AT,
             '+': TokenType.PLUS,
             '-': TokenType.MINUS,
             '*': TokenType.STAR,

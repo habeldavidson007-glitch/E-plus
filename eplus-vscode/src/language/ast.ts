@@ -14,7 +14,8 @@ export type NodeType =
     | 'Remove'
     | 'Block'
     | 'Comment'
-    | 'Expression';
+    | 'Expression'
+    | 'SysCall';
 
 export interface Node {
     type: NodeType;
@@ -101,6 +102,12 @@ export interface Expression extends Node {
     value: string;
 }
 
+export interface SysCall extends Node {
+    type: 'SysCall';
+    expression: string;
+    target?: string;
+}
+
 export type Statement =
     | Assignment
     | Input
@@ -112,7 +119,8 @@ export type Statement =
     | FunctionCall
     | Return
     | Remove
-    | Comment;
+    | Comment
+    | SysCall;
 
 // Helper function to create nodes with position info
 export function createNode<T extends Node>(type: T['type'], props: Partial<T>, line?: number, column?: number): T {

@@ -1,11 +1,13 @@
 import * as vscode from 'vscode';
 import { tokenize } from './language/tokenizer';
 import { parse } from './language/parser';
-import { validate } from './language/validator';
-import { transpileToPython, transpileToCpp, transpileToGdscript } from './language/transpiler/python';
+import { validate, validateWithDefaults } from './language/validator';
+import { transpileToPython } from './language/transpiler/python';
+import { transpileToCpp } from './language/transpiler/cpp';
+import { transpileToGdscript } from './language/transpiler/gdscript';
 import { PreviewPanel } from './ui/webview';
 import { registerHoverProvider } from './features/hover';
-import { registerDiagnostics } from './features/diagnostics';
+import { activateDiagnostics } from './features/diagnostics';
 import { registerCodeActions } from './features/codeActions';
 import { registerFormatter } from './features/formatter';
 
@@ -21,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Register language features
     registerHoverProvider(context);
-    registerDiagnostics(context, diagnosticCollection);
+    activateDiagnostics(context);
     registerCodeActions(context);
     registerFormatter(context);
 
@@ -76,7 +78,8 @@ async function runValidation() {
     try {
         const tokens = tokenize(text);
         const ast = parse(tokens);
-        const issues = validate(ast);
+        const result = validate(ast);
+        const issues = result.issues;
 
         const diagnostics: vscode.Diagnostic[] = [];
         for (const issue of issues) {
@@ -164,14 +167,14 @@ async function buildCurrentFile() {
                 output = transpileToPython(ast);
         }
 
-        const uri = await vscode.window.showSaveDialog({
+        const saveDialogOptions = {
             defaultUri: vscode.Uri.file(document.fileName.replace(/\.e\+?$/, extension)),
+            saveLabel: 'Build',
             filters: {
-                'Python': ['py'],
-                'C++': ['cpp'],
-                'GDScript': ['gd']
-            }[targetLanguage === 'cpp' ? 'C++' : targetLanguage === 'gdscript' ? 'GDScript' : 'Python']
-        });
+                'Source Files': [extension.replace('.', '')]
+            }
+        };
+        const uri = await vscode.window.showSaveDialog(saveDialogOptions);
 
         if (uri) {
             await vscode.workspace.fs.writeFile(uri, Buffer.from(output));
