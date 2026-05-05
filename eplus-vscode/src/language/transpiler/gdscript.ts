@@ -90,11 +90,12 @@ function transpileStatement(stmt: AST.Statement, indent: number): string {
         
         case 'Repeat': {
             const repeatLines: string[] = [];
-            if (stmt.iterable) {
+            if (stmt.variable === 'forever') {
+                repeatLines.push(`${ind}while true:`);
+            } else if (stmt.iterable) {
                 repeatLines.push(`${ind}for ${stmt.variable} in ${stmt.iterable}:`);
             } else {
-                // Simple repeat without iterable
-                repeatLines.push(`${ind}for ${stmt.variable} in range(10):`);
+                repeatLines.push(`${ind}# ERROR: repeat "${stmt.variable}" requires "in <iterable>"`);
             }
             
             for (const blockStmt of stmt.block.statements) {
@@ -105,6 +106,13 @@ function transpileStatement(stmt: AST.Statement, indent: number): string {
             }
             
             return repeatLines.join('\n');
+        }
+        
+        case 'SysCall': {
+            if (stmt.target) {
+                return `${ind}var ${stmt.target} = ${stmt.expression}`;
+            }
+            return `${ind}${stmt.expression}`;
         }
         
         case 'FunctionDef': {

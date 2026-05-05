@@ -85,18 +85,18 @@ function transpileStatement(stmt: AST.Statement, indent: number): string {
                 }
             }
             
-            elseLines.push(`${id}}`);
+            elseLines.push(`${ind}}`);
             return elseLines.join('\n');
         }
         
         case 'Repeat': {
             const repeatLines: string[] = [];
-            if (stmt.iterable) {
-                // For range-based for loop
+            if (stmt.variable === 'forever') {
+                repeatLines.push(`${ind}while(true) {`);
+            } else if (stmt.iterable) {
                 repeatLines.push(`${ind}for (auto& ${stmt.variable} : ${stmt.iterable}) {`);
             } else {
-                // Default to a simple counter loop
-                repeatLines.push(`${ind}for (int ${stmt.variable} = 0; ${stmt.variable} < 10; ${stmt.variable}++) {`);
+                repeatLines.push(`${ind}// ERROR: repeat "${stmt.variable}" requires "in <iterable>"`);
             }
             
             for (const blockStmt of stmt.block.statements) {
@@ -108,6 +108,13 @@ function transpileStatement(stmt: AST.Statement, indent: number): string {
             
             repeatLines.push(`${ind}}`);
             return repeatLines.join('\n');
+        }
+        
+        case 'SysCall': {
+            if (stmt.target) {
+                return `${ind}auto ${stmt.target} = ${stmt.expression};`;
+            }
+            return `${ind}${stmt.expression};`;
         }
         
         case 'FunctionDef': {

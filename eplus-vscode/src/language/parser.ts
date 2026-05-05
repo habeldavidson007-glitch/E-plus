@@ -86,11 +86,26 @@ export class Parser {
         const line = token.line;
         const column = token.column;
 
+        // Strip @ prefix if present (entity marker)
+        if (this.match(TokenType.AT)) {
+            this.advance();
+        }
+
         // Comment
         if (this.match(TokenType.COMMENT)) {
             const commentToken = this.advance();
             const text = commentToken.value.slice(2).trim(); // Remove ##
             return AST.createNode<AST.Comment>('Comment', { text }, line, column);
+        }
+
+        // SysCall: sys "expression" or name = sys "expression"
+        if (this.match(TokenType.SYS)) {
+            this.advance();
+            const exprToken = this.expect(TokenType.STRING, 'sys expression');
+            const nativeExpr = exprToken.value.slice(1, -1); // Remove quotes
+            return AST.createNode<AST.SysCall>('SysCall', {
+                expression: nativeExpr
+            }, line, column);
         }
 
         // Input: name = < "prompt"
@@ -105,6 +120,15 @@ export class Parser {
                     const promptToken = this.expect(TokenType.STRING, 'input prompt');
                     const prompt = promptToken.value.slice(1, -1); // Remove quotes
                     return AST.createNode<AST.Input>('Input', { name: nameToken.value, prompt }, line, column);
+                } else if (this.match(TokenType.SYS)) {
+                    // name = sys "expression"
+                    this.advance(); // consume sys
+                    const exprToken = this.expect(TokenType.STRING, 'sys expression');
+                    const nativeExpr = exprToken.value.slice(1, -1); // Remove quotes
+                    return AST.createNode<AST.SysCall>('SysCall', {
+                        expression: nativeExpr,
+                        target: nameToken.value
+                    }, line, column);
                 } else {
                     // Regular assignment
                     const expr = this.collectExpression();
@@ -143,17 +167,27 @@ export class Parser {
         // Repeat: repeat var [in iterable] → block
         if (this.match(TokenType.REPEAT)) {
             this.advance();
-            const varToken = this.expect(TokenType.IDENT, 'repeat variable');
+            
+            // Check for "forever" keyword
+            let variable: string;
             let iterable: string | undefined;
-
-            if (this.match(TokenType.IN)) {
-                this.advance();
-                iterable = this.collectExpression();
+            
+            if (this.match(TokenType.FOREVER)) {
+                const foreverToken = this.advance();
+                variable = foreverToken.value;
+            } else {
+                const varToken = this.expect(TokenType.IDENT, 'repeat variable');
+                variable = varToken.value;
+                
+                if (this.match(TokenType.IN)) {
+                    this.advance();
+                    iterable = this.collectExpression();
+                }
             }
 
             const block = this.parseBlock();
             return AST.createNode<AST.Repeat>('Repeat', { 
-                variable: varToken.value, 
+                variable,
                 iterable,
                 block 
             }, line, column);
@@ -211,10 +245,10 @@ export class Parser {
             return AST.createNode<AST.Return>('Return', { expression: expr }, line, column);
         }
 
-        if (this.match(TokenType.ARROW)) {
-            // This is actually =>, but we tokenize it as ARROW for return
-            // In the grammar, => is an alias for return
-            // For now, handle it if it appears at statement start
+        if (this.match(TokenType.FAT_ARROW)) {
+            this.advance();
+            const expr = this.collectExpression();
+            return AST.createNode<AST.Return>('Return', { expression: expr }, line, column);
         }
 
         // Remove: remove name or ~~name
