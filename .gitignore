@@ -1,0 +1,13 @@
+```
+# Dependencies
+node_modules/
+
+# Editors
+.vscode/
+
+# Compiled and build artifacts
+*.js.map
+*.tsbuildinfo
+dist/
+build/
+```

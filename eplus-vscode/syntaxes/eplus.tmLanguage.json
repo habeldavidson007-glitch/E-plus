@@ -1,0 +1,153 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "E+ Language",
+  "scopeName": "source.eplus",
+  "fileTypes": ["e+", "eplus"],
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#keywords" },
+    { "include": "#symbols" },
+    { "include": "#functions" },
+    { "include": "#identifiers" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-hash.eplus",
+          "match": "##.*$"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.eplus",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.eplus",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.integer.eplus",
+          "match": "\\b\\d+\\b"
+        },
+        {
+          "name": "constant.numeric.float.eplus",
+          "match": "\\b\\d+\\.\\d+\\b"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.eplus",
+          "match": "\\b(else|repeat|in)\\b"
+        },
+        {
+          "name": "keyword.other.eplus",
+          "match": "\\b(call|return|remove)\\b"
+        },
+        {
+          "name": "constant.language.boolean.eplus",
+          "match": "\\b(true|false)\\b"
+        }
+      ]
+    },
+    "symbols": {
+      "patterns": [
+        {
+          "name": "keyword.operator.input.eplus",
+          "match": "<"
+        },
+        {
+          "name": "keyword.operator.output.eplus",
+          "match": ">"
+        },
+        {
+          "name": "keyword.control.condition.eplus",
+          "match": "\\?"
+        },
+        {
+          "name": "keyword.control.flow.eplus",
+          "match": "→"
+        },
+        {
+          "name": "keyword.operator.assignment.eplus",
+          "match": "="
+        },
+        {
+          "name": "keyword.operator.remove.eplus",
+          "match": "~~"
+        },
+        {
+          "name": "keyword.operator.call.eplus",
+          "match": "\\^"
+        },
+        {
+          "name": "keyword.operator.return.eplus",
+          "match": "=>"
+        },
+        {
+          "name": "keyword.operator.arithmetic.eplus",
+          "match": "(\\+|-|\\*|/)"
+        },
+        {
+          "name": "keyword.operator.comparison.eplus",
+          "match": "(==|!=|>=|<=|>|<)"
+        },
+        {
+          "name": "keyword.operator.logical.eplus",
+          "match": "\\b(and|or|not)\\b"
+        }
+      ]
+    },
+    "functions": {
+      "patterns": [
+        {
+          "name": "entity.name.function.eplus",
+          "begin": "\\[",
+          "beginCaptures": {
+            "0": { "name": "punctuation.definition.function.begin.eplus" }
+          },
+          "end": "\\]",
+          "endCaptures": {
+            "0": { "name": "punctuation.definition.function.end.eplus" }
+          },
+          "patterns": [
+            {
+              "name": "entity.name.function.eplus",
+              "match": "[a-zA-Z_][a-zA-Z0-9_]*"
+            }
+          ]
+        },
+        {
+          "name": "meta.function-call.eplus",
+          "match": "(call|\\^)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
+          "captures": {
+            "1": { "name": "keyword.other.call.eplus" },
+            "2": { "name": "entity.name.function.eplus" }
+          }
+        }
+      ]
+    },
+    "identifiers": {
+      "patterns": [
+        {
+          "name": "variable.other.eplus",
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
+        }
+      ]
+    }
+  }
+}
