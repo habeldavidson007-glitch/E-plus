@@ -157,11 +157,22 @@ export class Parser {
             return AST.createNode<AST.Condition>('Condition', { condition, block }, line, column);
         }
 
-        // Else: else → block
+        // Else-If: else ? (condition) → block
         if (this.match(TokenType.ELSE)) {
             this.advance();
-            const block = this.parseBlock();
-            return AST.createNode<AST.Else>('Else', { block }, line, column);
+            // Check if followed by ? for else-if
+            if (this.match(TokenType.QUESTION)) {
+                this.advance(); // consume ?
+                this.expect(TokenType.LPAREN, 'else-if condition');
+                const condition = this.collectUntil(TokenType.RPAREN);
+                this.advance(); // consume )
+                const block = this.parseBlock();
+                return AST.createNode<AST.ElseIf>('ElseIf', { condition, block }, line, column);
+            } else {
+                // Regular else
+                const block = this.parseBlock();
+                return AST.createNode<AST.Else>('Else', { block }, line, column);
+            }
         }
 
         // Repeat: repeat var [in iterable] → block

@@ -28,23 +28,26 @@ export interface ValidatorConfig {
   maxLogicalOperators: number;
   maxFunctionParameters: number;
   maxFunctionArguments: number;
+  maxNestingDepth: number;
 }
 
 const DEFAULT_CONFIG: ValidatorConfig = {
   maxIdentifiersPerLine: 3,
   maxLogicalOperators: 2,
   maxFunctionParameters: 3,
-  maxFunctionArguments: 3
+  maxFunctionArguments: 3,
+  maxNestingDepth: 3
 };
 
 export function validate(ast: AST.Program, config: Partial<ValidatorConfig> = {}): ValidationResult {
   const finalConfig = { ...DEFAULT_CONFIG, ...config };
   const issues: CognitiveIssue[] = [];
 
-  // Validate each statement
-  for (const stmt of ast.statements) {
-    validateStatement(stmt, issues, finalConfig);
-  }
+  // Validate each statement with nesting depth tracking
+  validateStatement(stmt => validateStatementInternal(stmt, issues, finalConfig, 0), ast.statements);
+
+  // Check for nesting depth overload
+  checkNestingDepth(ast, issues, finalConfig.maxNestingDepth);
 
   // Calculate cognitive score
   const score = calculateCognitiveScore(ast, issues);
@@ -55,6 +58,22 @@ export function validate(ast: AST.Program, config: Partial<ValidatorConfig> = {}
     score
   };
 }
+
+function validateStatement(
+  validatorFn: (stmt: AST.Statement) => void,
+  statements: AST.Statement[]
+): void {
+  for (const stmt of statements) {
+    validatorFn(stmt);
+  }
+}
+
+function validateStatementInternal(
+  stmt: AST.Statement,
+  issues: CognitiveIssue[],
+  config: ValidatorConfig,
+  depth: number
+): void {
 
 function calculateCognitiveScore(ast: AST.Program, issues: CognitiveIssue[]): number {
   const baseScore = 100;

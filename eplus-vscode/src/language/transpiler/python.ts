@@ -45,6 +45,19 @@ function transpileStatement(stmt: AST.Statement, indent: number): string {
             
             return conditionLines.join('\n');
         
+        case 'ElseIf':
+            const elseifLines: string[] = [];
+            elseifLines.push(`${ind}elif ${stmt.condition}:`);
+            
+            for (const blockStmt of stmt.block.statements) {
+                const result = transpileStatement(blockStmt, indent + 1);
+                if (result) {
+                    elseifLines.push(result);
+                }
+            }
+            
+            return elseifLines.join('\n');
+        
         case 'Else':
             const elseLines: string[] = [];
             elseLines.push(`${ind}else:`);
