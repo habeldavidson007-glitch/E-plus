@@ -7,51 +7,42 @@ dist/
 build/
 target/
 
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Logs
+# Logs and temp files
 *.log
+*.tmp
 
 # Environment
 .env
 .env.local
 *.env.*
 
+# Editors
+.vscode/
+.idea/
+
 # Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-env/
-venv/
-.venv/
-.ENV
-.python-version
 
-# Coverage
-.coverage
-coverage/
-htmlcov/
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.hprof
 
-# Temporary files
-*.tmp
-*.temp
-*.bak
-
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# MyPy
-.mypy_cache/
-
-# Pytest
-.pytest_cache/
+# C/C++
+*.o
+*.obj
+*.so
+*.a
+*.lib
+*.dll
+*.exe
+*.out
 
 # Compressed files
 *.zip
@@ -72,8 +63,22 @@ Thumbs.db
 *.Z
 *.lz
 *.lzo
-*.tar.gz
-*.tar.bz2
-*.tar.xz
-*.tar.zst
+
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
+
+# MyPy cache
+.mypy_cache/
+
+# PyTest cache
+.pytest_cache/
+
+# Gradle
+.gradle/
+
+# DS Store and Thumbs
+.DS_Store
+Thumbs.db
 ```

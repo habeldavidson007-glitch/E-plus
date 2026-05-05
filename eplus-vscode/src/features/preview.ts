@@ -3,7 +3,7 @@ import { tokenize } from '../language/tokenizer';
 import { parse } from '../language/parser';
 import { validate, CognitiveIssue, IssueSeverity } from '../language/validator';
 import { transpileToPython } from '../language/transpiler/python';
-import { transpileToGDScript } from '../language/transpiler/gdscript';
+import { transpileToGdscript } from '../language/transpiler/gdscript';
 import { transpileToCpp } from '../language/transpiler/cpp';
 
 export class PreviewPanel {
@@ -128,7 +128,7 @@ export class PreviewPanel {
           transpiledCode = transpileToPython(ast);
           break;
         case 'gdscript':
-          transpiledCode = transpileToGDScript(ast);
+          transpiledCode = transpileToGdscript(ast);
           break;
         case 'cpp':
           transpiledCode = transpileToCpp(ast);

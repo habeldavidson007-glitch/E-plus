@@ -89,9 +89,6 @@ function createSplitAction(
         );
 
         action.edit = edit;
-        action.documentation = new vscode.MarkdownString(
-            'Break complex conditions into smaller, sequential checks for better readability.'
-        );
         return action;
     }
 
@@ -102,13 +99,6 @@ function createSplitAction(
             vscode.CodeActionKind.QuickFix
         );
 
-        action.documentation = new vscode.MarkdownString(
-            'Functions with too many parameters are hard to understand. Consider:\n\n' +
-            '- Grouping related parameters into an object\n' +
-            '- Splitting into smaller, focused functions\n' +
-            '- Using builder pattern for complex configurations'
-        );
-
         return action;
     }
 
@@ -117,13 +107,6 @@ function createSplitAction(
         const action = new vscode.CodeAction(
             'Group related arguments or split call',
             vscode.CodeActionKind.QuickFix
-        );
-
-        action.documentation = new vscode.MarkdownString(
-            'Function calls with many arguments reduce readability. Consider:\n\n' +
-            '- Grouping related arguments into a single object/struct\n' +
-            '- Breaking the operation into multiple smaller calls\n' +
-            '- Using named parameters if supported by target language'
         );
 
         return action;

@@ -1,0 +1,26 @@
+## Test all E+ v4 features
+
+@user = < "Enter your name"
+age = < "Enter your age"
+
+? (age > 17) →
+    > "Hello " + user + ", you are allowed"
+else →
+    > "Sorry, you must be older"
+
+numbers = [1, 2, 3, 4, 5]
+repeat item in numbers →
+    > item
+
+[add] (a, b) →
+    result = a + b
+    return result
+
+sum = call add(10, 20)
+> "Sum is " + sum
+
+temp = 999
+remove temp
+
+ram = sys "psutil.virtual_memory().percent"
+> "RAM usage: " + ram
