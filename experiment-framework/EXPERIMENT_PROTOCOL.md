@@ -51,6 +51,17 @@ Simulate a resource monitor:
 
 **Files:** `tasks/task3_state.py`, `tasks/task3_eplus.eplus`
 
+### Task 4: Data Transformation (Hostile Task)
+Process user data with filtering, mapping, and aggregation:
+- Filter active users from list
+- Extract and compute statistics (count, sum, average, max, min)
+- Classify performance based on average score
+- Output results
+
+**Purpose:** Tests compression vs decomposition trade-off. Python can use list comprehensions; E+ requires explicit steps.
+
+**Files:** `tasks/task4_data.py`, `tasks/task4_eplus.eplus`
+
 ## Metrics
 
 ### A. Objective Metrics (Hard Data)

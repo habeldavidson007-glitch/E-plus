@@ -1,0 +1,80 @@
+{
+  "summary": {
+    "delta_objective": {
+      "mean": -4.910000000000011,
+      "median": -4.910000000000011,
+      "min": -4.910000000000011,
+      "max": -4.910000000000011,
+      "improvement_rate": 0.0,
+      "strong_improvement_rate": 0.0
+    },
+    "delta_experience": {
+      "mean": 15.0,
+      "median": 15.0,
+      "min": 15.0,
+      "max": 15.0,
+      "improvement_rate": 100.0,
+      "strong_improvement_rate": 100.0
+    },
+    "delta_structural": {
+      "mean": 89.0,
+      "median": 89,
+      "min": 89,
+      "max": 89,
+      "improvement_rate": 100.0,
+      "strong_improvement_rate": 100.0
+    },
+    "delta_behavioral": {
+      "mean": -9.416666666666671,
+      "median": -9.416666666666671,
+      "min": -9.416666666666671,
+      "max": -9.416666666666671,
+      "improvement_rate": 0.0,
+      "strong_improvement_rate": 0.0
+    },
+    "delta_composite": {
+      "mean": 19.169000000000004,
+      "median": 19.169000000000004,
+      "min": 19.169000000000004,
+      "max": 19.169000000000004,
+      "improvement_rate": 100.0,
+      "strong_improvement_rate": 100.0
+    },
+    "participant_count": 1,
+    "individual_deltas": [
+      {
+        "delta_objective": -4.910000000000011,
+        "delta_experience": 15.0,
+        "delta_structural": 89,
+        "delta_behavioral": -9.416666666666671,
+        "delta_composite": 19.169000000000004
+      }
+    ]
+  },
+  "raw_results": [
+    {
+      "participant_id": 1,
+      "mode": "python",
+      "task_id": 1,
+      "scores": {
+        "objective_efficiency": 58.5,
+        "cognitive_experience": 52.5,
+        "structural_simplicity": 0,
+        "behavioral_friction": 80.25,
+        "composite_ces": 48.262499999999996
+      }
+    },
+    {
+      "participant_id": 1,
+      "mode": "eplus",
+      "task_id": 1,
+      "scores": {
+        "objective_efficiency": 53.58999999999999,
+        "cognitive_experience": 67.5,
+        "structural_simplicity": 89,
+        "behavioral_friction": 70.83333333333333,
+        "composite_ces": 67.4315
+      }
+    }
+  ]
+}
