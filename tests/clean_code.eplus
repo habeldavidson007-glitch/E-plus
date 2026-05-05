@@ -1,0 +1,28 @@
+## Clean Code Test - Simple Task Manager
+
+tasks = []
+
+[add_task] (task) →
+    tasks = tasks + [task]
+    > "Added task"
+
+[show_tasks] () →
+    repeat item in tasks →
+        > item
+
+[main] () →
+    repeat forever →
+        action = < "add/show/exit"
+        
+        ? (action == "add") →
+            t = < "Enter task"
+            call add_task(t)
+        
+        else ? (action == "show") →
+            call show_tasks()
+        
+        else ? (action == "exit") →
+            > "Goodbye"
+            return
+
+call main()
