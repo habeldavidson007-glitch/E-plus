@@ -248,12 +248,16 @@ while True:
 
 ## Status
 
+**Version:** v0.1-dev (Experimental)
+
+E+ is an experimental cognitive programming system. Expect changes. Use for exploration and feedback, not production.
+
 - ✅ Language syntax stabilized
 - ✅ Cognitive validator implemented
 - ✅ Multi-target transpilation working
 - ✅ VSCode extension functional
 - ✅ Scientific validation framework ready
-- 🧪 Real-world user testing pending
+- 🧪 Real-world user testing in progress
 
 ---
 
